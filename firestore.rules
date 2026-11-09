@@ -1,0 +1,17 @@
+rules_version = '2';
+
+// Règles de sécurité pour Monstres & Missions.
+// À copier dans la console Firebase : Firestore Database > Règles > Publier.
+//
+// Chaque famille vit sous un code secret de 20 caractères (ex. abcde-fghjk-mnpqr-stuvw).
+// Il est impossible de lister les familles : pour lire ou écrire, il faut connaître le code.
+// Seules les collections utilisées par l'appli sont autorisées.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /familles/{fid}/{col}/{docId} {
+      allow read, write: if fid.matches('^[a-z2-9]{5}(-[a-z2-9]{5}){3}$')
+                         && col in ['config', 'kids', 'tasks', 'rewards', 'behaviors', 'months'];
+    }
+  }
+}
